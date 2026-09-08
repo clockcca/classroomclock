@@ -1,0 +1,370 @@
+<style>
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0f172a;
+    color: white;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.container {
+    height: 100vh;
+    width: 100vw;
+    box-sizing: border-box;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#clock {
+    text-align: center;
+    font-size: 4vw;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#date {
+    text-align: center;
+    font-size: 1.2vw;
+    color: #cbd5e1;
+    margin-bottom: 10px;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.info-card {
+    background: #1e293b;
+    border-radius: 10px;
+    padding: 8px;
+    text-align: center;
+}
+
+.info-card h2 {
+    margin: 0;
+    color: #93c5fd;
+    font-size: 1vw;
+}
+
+.info-value {
+    font-size: 1.7vw;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.schedule-card {
+    flex: 1;
+    background: #1e293b;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.schedule-card h2 {
+    margin: 0 0 10px 0;
+    color: #93c5fd;
+    text-align: center;
+    font-size: 1.2vw;
+}
+
+#scheduleTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+#scheduleTable th {
+    background: #2563eb;
+    color: white;
+    padding: 8px;
+    font-size: 0.9vw;
+}
+
+#scheduleTable td {
+    padding: 7px;
+    font-size: 0.85vw;
+    text-align: center;
+    border-bottom: 1px solid #475569;
+}
+
+#scheduleTable tr:nth-child(even) {
+    background: #334155;
+}
+
+#scheduleTable tr:nth-child(odd) {
+    background: #1e293b;
+}
+
+.current-row {
+    background: #16a34a !important;
+    color: white;
+    font-weight: bold;
+}
+
+</style>
+
+<div class="container">
+
+    <div id="clock">Loading...</div>
+
+    <div id="date"></div>
+
+    <div class="dashboard">
+
+        <div class="info-card">
+            <h2>CURRENT PERIOD</h2>
+            <div id="currentPeriod" class="info-value">
+                Loading...
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h2>NEXT PERIOD</h2>
+            <div id="nextPeriod" class="info-value">
+                Loading...
+            </div>
+        </div>
+
+        <div class="info-card">
+            <h2>TIME UNTIL NEXT PERIOD</h2>
+            <div id="countdown" class="info-value">
+                Loading...
+            </div>
+        </div>
+
+    </div>
+
+    <div class="schedule-card">
+
+        <h2>Bell Schedule</h2>
+
+        <table id="scheduleTable">
+
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Start</th>
+                    <th>End</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>1st</td>
+                    <td>8:05 AM</td>
+                    <td>8:50 AM</td>
+                </tr>
+
+                <tr>
+                    <td>2nd</td>
+                    <td>8:55 AM</td>
+                    <td>9:40 AM</td>
+                </tr>
+
+                <tr>
+                    <td>3rd</td>
+                    <td>9:45 AM</td>
+                    <td>10:30 AM</td>
+                </tr>
+
+                <tr>
+                    <td>4th</td>
+                    <td>10:35 AM</td>
+                    <td>11:20 AM</td>
+                </tr>
+
+                <tr>
+                    <td>Homeroom/Advisory</td>
+                    <td>11:20 AM</td>
+                    <td>11:50 AM</td>
+                </tr>
+
+                <tr>
+                    <td>6th</td>
+                    <td>11:50 AM</td>
+                    <td>12:35 PM</td>
+                </tr>
+
+                <tr>
+                    <td>7th</td>
+                    <td>12:40 PM</td>
+                    <td>1:25 PM</td>
+                </tr>
+
+                <tr>
+                    <td>8th</td>
+                    <td>1:30 PM</td>
+                    <td>2:15 PM</td>
+                </tr>
+
+                <tr>
+                    <td>9th</td>
+                    <td>2:20 PM</td>
+                    <td>3:05 PM</td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+const schedule = [
+    {name:"1st", start:"08:05", end:"08:50"},
+    {name:"2nd", start:"08:55", end:"09:40"},
+    {name:"3rd", start:"09:45", end:"10:30"},
+    {name:"4th", start:"10:35", end:"11:20"},
+    {name:"Homeroom/Advisory", start:"11:20", end:"11:50"},
+    {name:"6th", start:"11:50", end:"12:35"},
+    {name:"7th", start:"12:40", end:"13:25"},
+    {name:"8th", start:"13:30", end:"14:15"},
+    {name:"9th", start:"14:20", end:"15:05"}
+];
+
+function todayTime(time) {
+
+    const [hours, minutes] = time.split(":").map(Number);
+
+    const d = new Date();
+
+    d.setHours(hours);
+    d.setMinutes(minutes);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+
+    return d;
+}
+
+function formatCountdown(ms) {
+
+    const totalSeconds =
+        Math.max(0, Math.floor(ms / 1000));
+
+    const hours =
+        Math.floor(totalSeconds / 3600);
+
+    const minutes =
+        Math.floor((totalSeconds % 3600) / 60);
+
+    const seconds =
+        totalSeconds % 60;
+
+    return hours + "h " +
+           minutes + "m " +
+           seconds + "s";
+}
+
+function updateDisplay() {
+
+    const now = new Date();
+
+    document.getElementById("clock").innerHTML =
+        now.toLocaleTimeString();
+
+    document.getElementById("date").innerHTML =
+        now.toLocaleDateString(undefined,{
+            weekday:'long',
+            year:'numeric',
+            month:'long',
+            day:'numeric'
+        });
+
+    let current = "Before School";
+    let next = "";
+    let countdown = "";
+
+    document
+    .querySelectorAll("#scheduleTable tbody tr")
+    .forEach(row =>
+        row.classList.remove("current-row")
+    );
+
+    for (let i = 0; i < schedule.length; i++) {
+
+        const start =
+            todayTime(schedule[i].start);
+
+        const end =
+            todayTime(schedule[i].end);
+
+        if (now >= start && now < end) {
+
+            current = schedule[i].name;
+
+            document
+            .querySelectorAll(
+                "#scheduleTable tbody tr"
+            )[i]
+            .classList.add("current-row");
+
+            if (i < schedule.length - 1) {
+
+                next = schedule[i + 1].name;
+
+                countdown =
+                    formatCountdown(
+                        todayTime(
+                            schedule[i + 1].start
+                        ) - now
+                    );
+
+            } else {
+
+                next = "End of Day";
+
+                countdown =
+                    formatCountdown(end - now);
+            }
+
+            break;
+        }
+
+        if (now < start) {
+
+            current = "Before School";
+
+            next = schedule[i].name;
+
+            countdown =
+                formatCountdown(start - now);
+
+            break;
+        }
+    }
+
+    if (now > todayTime("15:05")) {
+
+        current = "School Over";
+        next = "Tomorrow";
+        countdown = "--";
+    }
+
+    document.getElementById("currentPeriod").innerHTML =
+        current;
+
+    document.getElementById("nextPeriod").innerHTML =
+        next;
+
+    document.getElementById("countdown").innerHTML =
+        countdown;
+}
+
+updateDisplay();
+
+setInterval(updateDisplay, 1000);
+
+</script>
