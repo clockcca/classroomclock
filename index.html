@@ -296,16 +296,12 @@ function updateDisplay() {
     for (let i = 0; i < schedule.length; i++) {
 
         const start =
-            todayTime(schedule[i].start).getTime();
+            todayTime(schedule[i].start);
 
         const end =
-            todayTime(schedule[i].end).getTime();
-        
-        const currentTime = 
-            now.getTime();
+            todayTime(schedule[i].end);
 
-        if (now >= start && 
-            currentTime < end) {
+        if (now >= start && now < end) {
 
             current = schedule[i].name;
 
@@ -323,7 +319,7 @@ function updateDisplay() {
                     formatCountdown(
                         todayTime(
                             schedule[i + 1].start
-                        ).getTime() - currentTime
+                        ) - now
                     );
 
             } else {
@@ -331,9 +327,7 @@ function updateDisplay() {
                 next = "End of Day";
 
                 countdown =
-                    formatCountdown(
-                        end - currentTime
-                    );
+                    formatCountdown(end - now);
             }
 
             break;
@@ -352,7 +346,7 @@ function updateDisplay() {
         }
     }
 
-    if (now > todayTime("15:05")getTime()) {
+    if (now > todayTime("15:05")) {
 
         current = "School Over";
         next = "Tomorrow";
